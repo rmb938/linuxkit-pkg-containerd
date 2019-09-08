@@ -62,7 +62,10 @@ jobs:
     steps:
       - run:
           name: Create workspace
-          command: mkdir -p /workspace/image
+          command: mkdir -p /workspace
+      - run:
+          name: Install packages
+          command: apt-get update && apt-get install -y ca-certificates curl
       - run:
           name: Configure $PATH
           command: echo 'export PATH=/workspace/bin:$PATH' >> $BASH_ENV
