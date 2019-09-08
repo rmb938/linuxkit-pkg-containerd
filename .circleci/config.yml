@@ -61,6 +61,9 @@ jobs:
       - image: debian:stretch
     steps:
       - run:
+          name: Create workspace
+          command: mkdir -p /workspace/image
+      - run:
           name: Configure $PATH
           command: echo 'export PATH=/workspace/bin:$PATH' >> $BASH_ENV
       - attach_workspace:
