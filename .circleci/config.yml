@@ -80,7 +80,7 @@ jobs:
       - run:
           name: Push Docker Image
           command: |
-            docker login -u rmb938 -p $DOCKER_PASSWORD
+            echo $DOCKER_PASSWORD | docker login docker.pkg.github.com -u rmb938 --password-stdin
             linuxkit pkg push -disable-content-trust .
 
 workflows:
