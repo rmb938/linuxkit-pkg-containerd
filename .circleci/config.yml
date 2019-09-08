@@ -66,10 +66,14 @@ jobs:
           command: mkdir -p /workspace
       - run:
           name: Install packages
-          command: apt-get update && apt-get install -y ca-certificates curl git jq
+          command: |
+            apt-get update && apt-get install -y ca-certificates curl git make notary jq golang
+            go get github.com/estesp/manifest-tool
       - run:
           name: Configure $PATH
-          command: echo 'export PATH=/workspace/bin:$PATH' >> $BASH_ENV
+          command: |
+            echo 'export PATH=/workspace/bin:$PATH' >> $BASH_ENV
+            echo 'export PATH=~/go/bin:$PATH' >> $BASH_ENV
       - attach_workspace:
           at: /workspace
       - setup_remote_docker:
