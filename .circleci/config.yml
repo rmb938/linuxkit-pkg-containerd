@@ -2,7 +2,7 @@ version: 2
 jobs:
   dependencies:
     docker:
-      - image: debian:stretch
+      - image: debian:buster
     steps:
       - run:
           name: Create workspace
@@ -27,7 +27,7 @@ jobs:
 
   build-image:
     docker:
-      - image: debian:stretch
+      - image: debian:buster
     steps:
       - run:
           name: Create workspace
@@ -59,7 +59,7 @@ jobs:
 
   push-image:
     docker:
-      - image: debian:stretch
+      - image: debian:buster
     steps:
       - run:
           name: Create workspace
