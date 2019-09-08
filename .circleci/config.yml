@@ -52,6 +52,7 @@ jobs:
           command: |
             linuxkit pkg build .
             docker save -o /workspace/image/image.tar $(linuxkit pkg show-tag .)
+            docker save -o /workspace/image/image-amd64.tar $(linuxkit pkg show-tag .)
       - persist_to_workspace:
           root: /workspace
           paths: image
@@ -76,7 +77,9 @@ jobs:
       - checkout
       - run:
           name: Load Docker Image
-          command: docker load -i /workspace/image/image.tar
+          command: |
+            docker load -i /workspace/image/image.tar
+            docker load -i /workspace/image/image-amd64.tar
       - run:
           name: Push Docker Image
           command: |
