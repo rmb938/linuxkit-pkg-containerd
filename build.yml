@@ -1,4 +1,4 @@
-org: rmb938
+org: docker.pkg.github.com/rmb938/linuxkit-pkg-containerd
 image: containerd
 network: true
 arches:

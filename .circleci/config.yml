@@ -1,0 +1,93 @@
+version: 2
+jobs:
+  dependencies:
+    docker:
+      - image: debian:stretch
+    steps:
+      - run:
+          name: Create workspace
+          command: mkdir -p /workspace/bin
+      - run:
+          name: Install packages
+          command: apt-get update && apt-get install -y ca-certificates curl
+      - run:
+          name: Fetch binaries
+          command: |
+            curl -fsSL -o /tmp/docker.tgz https://download.docker.com/linux/static/stable/x86_64/docker-18.03.0-ce.tgz
+            tar xfO /tmp/docker.tgz docker/docker > /workspace/bin/docker
+            curl -fsSL -o /workspace/bin/linuxkit https://github.com/linuxkit/linuxkit/releases/download/v0.7/linuxkit-linux-amd64
+      - run:
+          name: Versions
+          command: |
+             chmod +x /workspace/bin/docker # docker version deferred until daemon configured in relevant jobs
+             chmod +x /workspace/bin/linuxkit && /workspace/bin/linuxkit version
+      - persist_to_workspace:
+          root: /workspace
+          paths: bin
+
+  build-image:
+    docker:
+      - image: debian:stretch
+    steps:
+      - run:
+          name: Create workspace
+          command: mkdir -p /workspace/image
+      - run:
+          name: Configure $PATH
+          command: echo 'export PATH=/workspace/bin:$PATH' >> $BASH_ENV
+      - run:
+          name: Install packages
+          # ca-certificates are needed for attach_workspace (and git over https)
+          command: apt-get update && apt-get install -y ca-certificates curl git make openssh-client
+      - attach_workspace:
+          at: /workspace
+      - checkout
+      - setup_remote_docker:
+          version: 17.06.1-ce
+      - run:
+          name: Docker version
+          command: docker version
+      - run:
+          name: Build Image
+          command: |
+            linuxkit pkg build .
+            docker save -o /workspace/image/image.tar $(linuxkit pkg show-tag .)-amd64
+      - persist_to_workspace:
+          root: /workspace
+          paths: image
+
+  push-image:
+    docker:
+      - image: debian:stretch
+    steps:
+      - run:
+          name: Configure $PATH
+          command: echo 'export PATH=/workspace/bin:$PATH' >> $BASH_ENV
+      - attach_workspace:
+          at: /workspace
+      - setup_remote_docker:
+          version: 17.06.1-ce
+      - checkout
+      - run:
+          name: Load Docker Image
+          command: docker load -i /workspace/image/image.tar
+      - run:
+          name: Push Docker Image
+          command: |
+            docker login -u rmb938 -p $DOCKER_PASSWORD
+            linuxkit pkg push -disable-content-trust .
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - dependencies
+      - build-image:
+          requires:
+            - dependencies
+      - push-image:
+          requires:
+            - build-image
+          filters:
+            branches:
+              only: master
