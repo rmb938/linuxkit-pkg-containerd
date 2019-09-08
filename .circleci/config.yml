@@ -51,7 +51,7 @@ jobs:
           name: Build Image
           command: |
             linuxkit pkg build .
-            docker save -o /workspace/image/image.tar $(linuxkit pkg show-tag .)-amd64
+            docker save -o /workspace/image/image.tar $(linuxkit pkg show-tag .)
       - persist_to_workspace:
           root: /workspace
           paths: image
