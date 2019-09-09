@@ -13,7 +13,7 @@ jobs:
       - run:
           name: Fetch binaries
           command: |
-            curl -fsSL -o /tmp/docker.tgz https://download.docker.com/linux/static/stable/x86_64/docker-19.03.2.tgz
+            curl -fsSL -o /tmp/docker.tgz https://download.docker.com/linux/static/stable/x86_64/docker-18.09.3.tgz
             tar xfO /tmp/docker.tgz docker/docker > /workspace/bin/docker
             curl -fsSL -o /workspace/bin/linuxkit https://github.com/linuxkit/linuxkit/releases/download/v0.7/linuxkit-linux-amd64
       - run:
@@ -43,7 +43,7 @@ jobs:
           at: /workspace
       - checkout
       - setup_remote_docker:
-          version: 19.03.2
+          version: 18.09.3
       - run:
           name: Docker version
           command: docker version
@@ -73,7 +73,7 @@ jobs:
       - attach_workspace:
           at: /workspace
       - setup_remote_docker:
-          version: 19.03.2
+          version: 18.09.3
       - checkout
       - run:
           name: Load Docker Image
