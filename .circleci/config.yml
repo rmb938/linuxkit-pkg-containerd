@@ -86,7 +86,7 @@ jobs:
             echo '{"experimental": "enabled"}' > ~/.docker/config.json
             export DOCKER_IMAGE=`linuxkit pkg show-tag .`
             echo $DOCKER_PASSWORD | docker login docker.pkg.github.com -u rmb938 --password-stdin
-            docker push $(linuxkit pkg show-tag .)-amd64
+            docker push $DOCKER_IMAGE-amd64
             docker manifest create $DOCKER_IMAGE $DOCKER_IMAGE-amd64
             docker manifest push $DOCKER_IMAGE
 workflows:
