@@ -87,8 +87,9 @@ jobs:
             export DOCKER_IMAGE=`linuxkit pkg show-tag .`
             echo $DOCKER_PASSWORD | docker login docker.pkg.github.com -u rmb938 --password-stdin
             docker push $DOCKER_IMAGE-amd64
-            docker manifest create $DOCKER_IMAGE $DOCKER_IMAGE-amd64
-            docker manifest push $DOCKER_IMAGE
+            # Github Docker Repos don't support multi manifest
+            # docker manifest create $DOCKER_IMAGE $DOCKER_IMAGE-amd64
+            # docker manifest push $DOCKER_IMAGE
 workflows:
   version: 2
   build:
