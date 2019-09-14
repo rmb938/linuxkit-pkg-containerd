@@ -102,5 +102,7 @@ workflows:
           requires:
             - build-image
           filters:
+            tags:
+              only: /.*/
             branches:
               only: master
