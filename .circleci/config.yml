@@ -90,6 +90,9 @@ jobs:
             # Github Docker Repos don't support multi manifest
             # docker manifest create $DOCKER_IMAGE $DOCKER_IMAGE-amd64
             # docker manifest push $DOCKER_IMAGE
+            # Release image if tag
+            if [ -n "$CIRCLE_TAG" ]; docker tag $DOCKER_IMAGE-amd64 $(linuxkit pkg show-tag -hash $CIRCLE_TAG .)-amd64; fi
+            if [ -n "$CIRCLE_TAG" ]; docker push $(linuxkit pkg show-tag -hash $CIRCLE_TAG .)-amd64; fi
 workflows:
   version: 2
   build:
