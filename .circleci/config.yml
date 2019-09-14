@@ -97,10 +97,16 @@ workflows:
   version: 2
   build:
     jobs:
-      - dependencies
+      - dependencies:
+          filters:
+            tags:
+              only: /.*/
       - build-image:
           requires:
             - dependencies
+          filters:
+            tags:
+              only: /.*/
       - push-image:
           requires:
             - build-image
